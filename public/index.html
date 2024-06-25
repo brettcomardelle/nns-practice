@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Matching Game</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh; /* Ensure full viewport height */
+        }
+
+        #key-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1em;
+            color: #666;
+            cursor: pointer;
+        }
+
+        #character-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1; /* Fill remaining space */
+            font-size: 3em;
+        }
+
+        #button-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 evenly spaced columns */
+            gap: 10px;
+            margin-top: auto; /* Push buttons to the bottom */
+            margin-bottom: 20px; /* Optional: Add some space at the bottom */
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            text-align: center;
+            background-color: #ffffff;
+            color: #333333;
+            border: 1px solid #cccccc;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .green-background {
+            background-color: green;
+            color: white; /* Text color when background is green */
+        }
+
+        .red-background {
+            background-color: red;
+            color: white; /* Text color when background is red */
+        }
+
+        .white-text {
+            color: white;
+        }
+
+        /* Popup menu styles */
+        .popup {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            padding: 10px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .popup ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .popup li {
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .popup li:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div id="key-info">Key: A</div>
+    <div id="character-container">
+        <div id="character">3</div>
+    </div>
+    <div id="button-container">
+        <!-- Buttons for each musical key -->
+        <button id="buttonA">A</button>
+        <button id="buttonA#/Bb">A#/Bb</button>
+        <button id="buttonB">B</button>
+        <button id="buttonC">C</button>
+        <button id="buttonC#/Db">C#/Db</button>
+        <button id="buttonD">D</button>
+        <button id="buttonD#/Eb">D#/Eb</button>
+        <button id="buttonE">E</button>
+        <button id="buttonF">F</button>
+        <button id="buttonF#/Gb">F#/Gb</button>
+        <button id="buttonG">G</button>
+        <button id="buttonG#/Ab">G#/Ab</button>
+    </div>
+
+    <!-- Popup menu -->
+    <div class="popup" id="popupMenu">
+        <ul id="keyList">
+            <li>A</li>
+            <li>A#/Bb</li>
+            <li>B</li>
+            <li>C</li>
+            <li>C#/Db</li>
+            <li>D</li>
+            <li>D#/Eb</li>
+            <li>E</li>
+            <li>F</li>
+            <li>F#/Gb</li>
+            <li>G</li>
+            <li>G#/Ab</li>
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const characterDisplay = document.getElementById('character');
+    const keyInfo = document.getElementById('key-info');
+    const buttons = document.querySelectorAll('#button-container button');
+    const popupMenu = document.getElementById('popupMenu');
+    const keyList = document.getElementById('keyList');
+
+    let currentKey = 'A'; // Default key is C
+    let currentNashvilleNumber = 1; // Default Nashville number is 1
+
+    // Function to update the displayed character (Nashville number)
+    function updateCharacter() {
+        // Generate a random Nashville number (1 through 7)
+        currentNashvilleNumber = Math.floor(Math.random() * 7) + 1;
+        characterDisplay.textContent = currentNashvilleNumber;
+    }
+
+    // Function to handle button click
+    function handleButtonClick(button) {
+        const buttonKey = button.textContent; // Get the text content of the button
+        
+        // Calculate the expected button label based on the currentKey and currentNashvilleNumber
+        let expectedButtonLabel = '';
+        switch (currentKey) {
+            case 'C':
+                expectedButtonLabel = ['C', 'D', 'E', 'F', 'G', 'A', 'B'][currentNashvilleNumber - 1];
+                break;
+            case 'C#/Db':
+                expectedButtonLabel = ['C#/Db', 'D#/Eb', 'F', 'F#/Gb', 'G#/Ab', 'A#/Bb', 'C'][currentNashvilleNumber - 1];
+                break;
+            case 'D':
+                expectedButtonLabel = ['D', 'E', 'F#/Gb', 'G', 'A', 'B', 'C#/Db'][currentNashvilleNumber - 1];
+                break;
+            case 'D#/Eb':
+                expectedButtonLabel = ['D#/Eb', 'F', 'G', 'G#/Ab', 'A#/Bb', 'C', 'D'][currentNashvilleNumber - 1];
+                break;
+            case 'E':
+                expectedButtonLabel = ['E', 'F#/Gb', 'G#/Ab', 'A', 'B', 'C#/Db', 'D#/Eb'][currentNashvilleNumber - 1];
+                break;
+            case 'F':
+                expectedButtonLabel = ['F', 'G', 'A', 'A#/Bb', 'C', 'D', 'E'][currentNashvilleNumber - 1];
+                break;
+            case 'F#/Gb':
+                expectedButtonLabel = ['F#/Gb', 'G#/Ab', 'A#/Bb', 'B', 'C#/Db', 'D#/Eb', 'F'][currentNashvilleNumber - 1];
+                break;
+            case 'G':
+                expectedButtonLabel = ['G', 'A', 'B', 'C', 'D', 'E', 'F#/Gb'][currentNashvilleNumber - 1];
+                break;
+            case 'G#/Ab':
+                expectedButtonLabel = ['G#/Ab', 'A#/Bb', 'C', 'C#/Db', 'D#/Eb', 'F', 'G'][currentNashvilleNumber - 1];
+                break;
+            case 'A':
+                expectedButtonLabel = ['A', 'B', 'C#/Db', 'D', 'E', 'F#/Gb', 'G#/Ab'][currentNashvilleNumber - 1];
+                break;
+            case 'A#/Bb':
+                expectedButtonLabel = ['A#/Bb', 'C', 'D', 'D#/Eb', 'F', 'G', 'A'][currentNashvilleNumber - 1];
+                break;
+            case 'B':
+                expectedButtonLabel = ['B', 'C#/Db', 'D#/Eb', 'E', 'F#/Gb', 'G#/Ab', 'A#/Bb'][currentNashvilleNumber - 1];
+                break;
+            default:
+                break;
+        }
+
+        // Check if the guessed button matches the expected button label
+        if (buttonKey === expectedButtonLabel) {
+            document.body.classList.add('green-background');
+            keyInfo.style.color = 'white'; // Change key-info text color to white
+        } else {
+            document.body.classList.add('red-background');
+            keyInfo.style.color = 'white'; // Change key-info text color to white
+        }
+
+        // Reset UI after 1 second
+        setTimeout(() => {
+            document.body.classList.remove('green-background', 'red-background');
+            keyInfo.style.color = '#666'; // Reset key-info text color to default
+            updateCharacter(); // Update Nashville number after delay
+        }, 1000);
+    }
+
+    // Event listener for button clicks
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            handleButtonClick(button);
+        });
+    });
+
+    // Event listener for key-info click to show popup menu
+    keyInfo.addEventListener('click', function () {
+        popupMenu.style.display = 'block';
+    });
+
+    // Event listener to select a key from popup menu
+    keyList.addEventListener('click', function (e) {
+        if (e.target.tagName === 'LI') {
+            const selectedKey = e.target.textContent;
+            keyInfo.textContent = `Key: ${selectedKey}`;
+            popupMenu.style.display = 'none';
+            currentKey = selectedKey; // Update currentKey
+            updateCharacter(); // Update Nashville number when key changes
+        }
+    });
+
+    // Initial character display update
+    updateCharacter();
+});
+
+    </script>
+</body>
+</html>
