@@ -210,6 +210,13 @@
         } else {
             document.body.classList.add('red-background');
             keyInfo.style.color = 'white'; // Change key-info text color to white
+
+            // Reset UI after 1 second and allow user to try again (no new guess number)
+            setTimeout(() => {
+                document.body.classList.remove('red-background');
+                keyInfo.style.color = '#666'; // Reset key-info text color to default
+            }, 1000);
+            return; // Exit function early to prevent updating Nashville number
         }
 
         // Reset UI after 1 second
